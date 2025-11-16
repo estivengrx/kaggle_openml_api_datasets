@@ -1,4 +1,6 @@
-This project contains Python code to download large amounts of datasets from Kaggle and OpenML's APIs. The main script is contained in the Jupyter notebook `kaggle_api_and_openml_library.ipynb`
+This has to be redefined.
+
+<!-- This project contains Python code to download large amounts of datasets from Kaggle and OpenML's APIs. The main script is contained in the Jupyter notebook `kaggle_api_and_openml_library.ipynb`
 
 ## Inside `kaggle_api_and_openml_library.ipynb`
 The notebook is divided into several sections:
@@ -16,4 +18,4 @@ The notebook is divided into several sections:
 ## Running the Notebook
 
 To run the notebook, you will need to install the necessary Python packages. You can do this by running `pip install -r requirements.txt` in your terminal.
-Please note that you will need to have a Kaggle API key (`kaggle.json`) to download datasets from Kaggle. You can obtain this key from your Kaggle account settings.
+Please note that you will need to have a Kaggle API key (`kaggle.json`) to download datasets from Kaggle. You can obtain this key from your Kaggle account settings. -->
