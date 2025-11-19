@@ -7,7 +7,7 @@ filterwarnings("ignore")
 kaggle.api.authenticate()
 
 class DatasetRetrieval:
-    def __init__(self, folder_path: str, data_columns: list):
+    def __init__(self, folder_path: str, data_columns: list = ['title', 'file-name', 'description', 'link']):
         """
         Initialize the DatasetRetrieval class.
 
@@ -17,7 +17,7 @@ class DatasetRetrieval:
 
         Attributes:
             folder_path (str): Path to the folder where datasets and metadata will be stored.
-            data_columns (list): List of column names for the metadata DataFrame.
+            data_columns (list): List of column names for the metadata DataFrame (default ['title', 'file-name', 'description', 'link'], could be extended if needed).
             datasets_folder (str): Path to the folder where downloaded datasets will be stored.
             metadata_file (str): Path to the Excel file where metadata about the datasets is stored.
         """
@@ -40,13 +40,16 @@ class DatasetRetrieval:
         Authenticate the Kaggle API using the `kaggle` library.
 
         This method ensures that the Kaggle API is authenticated using the credentials
-        stored in the `~/.kaggle/kaggle.json` file. The credentials must be set up prior
+        stored in the `~/.kaggle/kaggle.json` file (Linux/Mac) or 
+        `C:\\Users\\<Windows-username>\\.kaggle\\kaggle.json` (Windows). The credentials must be set up prior
         to using this method. Authentication is required to access Kaggle datasets and
         other API functionalities.
+        Refer to Kaggle's official documentation for more details on setting up API credentials:
+        https://www.kaggle.com/docs/api
         """
         kaggle.api.authenticate()
         
-    def _load_metadata_file(self):
+    def _load_metadata_file(self) -> pd.DataFrame:
         """
         Load the metadata Excel file into a DataFrame.
 
@@ -58,12 +61,13 @@ class DatasetRetrieval:
         """
         return pd.read_excel(self.metadata_file, engine='openpyxl')
     
-    def _save_metadata_file(self, df: pd.DataFrame, sheet_name: str = 'Sheet1'):
+    def _save_metadata_file(self, df: pd.DataFrame, sheet_name: str = 'Sheet1') -> None:
         """
         Save the metadata DataFrame to an Excel file.
 
         Args:
             df (pd.DataFrame): The DataFrame containing metadata to be saved.
+            sheet_name (str): The name of the sheet in the Excel file where the data will be saved (default is 'Sheet1').
 
         This method saves the provided DataFrame to the `datasets_information.xlsx` file
         located in the `folder_path` directory. The file is saved using the `xlsxwriter` engine.
@@ -77,7 +81,9 @@ class DatasetRetrieval:
         Args:
             dataset (object): The dataset object retrieved from the Kaggle API.
             allowed_licenses (list): A list of allowed license names for the dataset.
-                                    Example: ['CC0-1.0', 'CC0: Public Domain'].
+                                    Example: ['CC0-1.0', 'CC0: Public Domain']
+                                    Refer to Kaggle's license documentation for more details:
+                                    https://www.kaggle.com/docs/datasets#licenses
             max_size (int): The maximum allowed size of the dataset in megabytes (MB).
 
         Returns:
@@ -211,6 +217,8 @@ class DatasetRetrieval:
             index_range (range): 
                 A range of OpenML dataset IDs to retrieve. 
                 Example: `range(100, 200)`.
+                Refer to OpenML's dataset listing for valid IDs:
+                https://www.openml.org/search?type=data
 
         Returns:
             pd.DataFrame:
@@ -291,8 +299,9 @@ class DatasetRetrieval:
                     dataset_format="dataframe",
                     target=dataset_info.default_target_attribute
                 ) # Retrieve datasets
-
-                dataset_df = X.copy()
+                
+                # Combining both features and target into a single DataFrame
+                dataset_df = X.copy() 
                 if y is not None:
                     dataset_df["class"] = y
 
@@ -310,56 +319,3 @@ class DatasetRetrieval:
             self._save_metadata_file(metadata_df, sheet_name="openml-data") # Saving rows for each dataset
 
         return metadata_df
-
-
-# # Example of usage of the class
-# if __name__ == "__main__":
-    
-#     # # Define settings before instantiating the class
-#     # folder_path = os.path.join(
-#     #     os.path.dirname(os.path.abspath(__file__)),
-#     #     "data_retrieval_output"
-#     # )
-
-#     # data_columns = ['title', 'file-name', 'description', 'link']
-#     # search_terms = ['health']
-#     # allowed_licenses = []
-#     # max_size = 10  # in MB
-#     # page_range = range(1, 2)
-
-#     # # Instantiate the class (folder_path + columns are stored internally)
-#     # data_retrieval = DatasetRetrieval(folder_path, data_columns)
-
-#     # # Authenticate Kaggle API
-#     # data_retrieval.authenticate_kaggle()
-
-#     # # Retrieve datasets
-#     # datasets_info = data_retrieval.retrieve_kaggle_data(
-#     #     search_terms=search_terms,
-#     #     allowed_licenses=allowed_licenses,
-#     #     max_size=max_size,
-#     #     page_range=page_range
-#     # )
-
-#     # Define the main folder where metadata and datasets will be stored
-#     folder_path = os.path.join(
-#         os.path.dirname(os.path.abspath(__file__)),
-#         "data_retrieval_output"
-#     )
-
-#     # Metadata file columns for OpenML
-#     data_columns = ['title', 'file-name', 'description', 'link']
-
-#     # Instantiate your retrieval class
-#     data_retrieval = DatasetRetrieval(folder_path, data_columns)
-
-#     # Choose a range of OpenML dataset IDs to download
-#     # (small range just for demo — OpenML has thousands)
-#     dataset_range = range(50, 60)
-
-#     # Retrieve datasets
-#     metadata_df = data_retrieval.retrieve_openml_data(dataset_range)
-
-#     # Show updated metadata
-#     print("\nDownloaded datasets metadata:\n")
-#     print(metadata_df)
