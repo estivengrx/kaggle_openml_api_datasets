@@ -40,7 +40,7 @@ class DatasetRetrieval:
         Authenticate the Kaggle API using the `kaggle` library.
 
         This method ensures that the Kaggle API is authenticated using the credentials
-        stored in the `~/.kaggle/kaggle.json` file (Linux/Mac) or 
+        stored in the `~/.config/kaggle/kaggle.json` file (Linux/Mac) or 
         `C:\\Users\\<Windows-username>\\.kaggle\\kaggle.json` (Windows). The credentials must be set up prior
         to using this method. Authentication is required to access Kaggle datasets and
         other API functionalities.
